@@ -2,7 +2,7 @@ import {BankingTransactionModel} from "./banking-transaction.model";
 
 export interface IParseCSV {
     listTransaction: Array<BankingTransactionModel>,
-    listIndexInvalid: Array<IRowInvalid>,
+    listInvalid: Array<IRowInvalid>,
 }
 
 export interface IRowInvalid {

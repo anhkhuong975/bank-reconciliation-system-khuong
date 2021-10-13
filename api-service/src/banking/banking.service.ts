@@ -24,10 +24,11 @@ export class BankingService {
     /**
      * @description the method to parse csv file to array
      * @param file
+     * @return IParseCSV
      */
     protected async parseCSV(file: Express.Multer.File): Promise<IParseCSV> {
         const listTransaction: Array<BankingTransactionModel> = [];
-        const listIndexInvalid: IRowInvalid[] = [];
+        const listInvalid: IRowInvalid[] = [];
         const parsePromise = new Promise<IParseCSV>((resolve) => {
             let index: number = 0;
             HelperService.bufferToStream(file.buffer)
@@ -35,14 +36,14 @@ export class BankingService {
                 .on('data', (item) => {
                     if (index === 0) {
                         if (HelperService.isValidHeaderCSV(item)) {
-                            listIndexInvalid.push({index, row: item});
+                            listInvalid.push({index, row: item});
                         }
                     } else if (HelperService.isValidRow(item)) {
-                        listIndexInvalid.push({index, row: item});
+                        listInvalid.push({index, row: item});
                     } else if (HelperService.isValidDate(item[0])) {
-                        listIndexInvalid.push({index, row: item});
+                        listInvalid.push({index, row: item});
                     } else if (HelperService.isValidType(item[3])) {
-                        listIndexInvalid.push({index, row: item});
+                        listInvalid.push({index, row: item});
                     } else {
                         const transactionModel: BankingTransactionModel = {
                             date: item[0],
@@ -57,8 +58,8 @@ export class BankingService {
                 .on('end',function(){
                     resolve({
                         listTransaction,
-                        listIndexInvalid,
-                    } as IParseCSV)
+                        listInvalid,
+                    })
                 });
         });
         return await parsePromise;

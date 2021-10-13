@@ -2,10 +2,15 @@ import {Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from "@nestjs/platform-express";
 import {ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 import {ValidateFilePipe} from "../share/validate-file.pipe";
+import {BankingService} from "./banking.service";
 
 @ApiTags('Banking API')
 @Controller('banking')
 export class BankingController {
+    constructor(
+        private backingService: BankingService,
+    ) {
+    }
 
     @ApiOperation({
         summary: 'Import transaction file'
@@ -26,8 +31,7 @@ export class BankingController {
             },
         },
     })
-    uploadFile(@UploadedFile(ValidateFilePipe) file: Express.Multer.File) {
-        console.log(file);
-        return file;
+    importBankTransaction(@UploadedFile(ValidateFilePipe) file: Express.Multer.File) {
+        return this.backingService.importBankTransaction(file);
     }
 }

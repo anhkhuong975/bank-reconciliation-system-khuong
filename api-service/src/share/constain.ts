@@ -3,3 +3,18 @@ export const MESSAGE_ERROR = {
     ONLY_ONE: 'Validation failed. Only one file in a progress',
     ONLY_CSV: 'Validation failed. Only one CSV type in upload',
 };
+
+
+export const CSV_VALIDATE = {
+    HEADERS: {
+        DATE: 'DATE',
+        CONTENT: 'CONTENT',
+        AMOUNT: 'AMOUNT',
+        TYPE: 'TYPE',
+    },
+    LENGTH_DATE: 19,
+    COLUMN_NUM: 4,
+    TRANSACTION_TYPE: ['Deposit', "Withdraw"],
+};
+
+export type TRANSACTION_TYPE = 'Deposit' | 'Withdraw';

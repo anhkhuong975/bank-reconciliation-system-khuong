@@ -30,7 +30,7 @@ export class BankingService {
         if (parsed.listInvalid && parsed.listInvalid.length && parsed.listInvalid[0].index === 0) {
             throw new BadRequestException(MESSAGE_ERROR.FILE_HEADER_INVALID);
         }
-        const response = new ImportTransactionRo(parsed.listTransaction, parsed.listInvalid);
+        const response = new ImportTransactionRo(parsed.listTransaction.length, parsed.listInvalid);
         if (parsed.listTransaction.length === 0) {
             return response;
         }
@@ -38,11 +38,20 @@ export class BankingService {
         // TODO: its low performance. Solution: one loop to divide and emit data
         const transChunks = _.chunk<BankingTransactionModel>(parsed.listTransaction, EMIT_TRANSACTION_DIVISION_SIZE);
         transChunks.forEach(transChuck => {
-            this.client.emit<IParseCSV, Array<BankingTransactionModel>>(
-                MessagePatternEnum.BANK_TRANSACTION,
-                transChuck);
+            this.emitTransactions(MessagePatternEnum.BANK_TRANSACTION, transChuck);
         });
         return response;
+    }
+
+    /**
+     * @description emit the transactions to rabbitMq broker
+     * @param patternName
+     * @param transactions
+     */
+    protected async emitTransactions(patternName: string, transactions: Array<BankingTransactionModel>) {
+        this.client.emit<IParseCSV, Array<BankingTransactionModel>>(
+            MessagePatternEnum.BANK_TRANSACTION,
+            transactions);
     }
 
     /**

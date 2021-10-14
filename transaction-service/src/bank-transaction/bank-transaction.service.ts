@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {RmqContext} from "@nestjs/microservices";
 import {BankingTransactionModel} from "./bank-transaction.model";
 import {getConnection} from "typeorm";
@@ -40,9 +40,11 @@ export class BankTransactionService {
                 .values(bankTransactionEntities)
                 .execute();
             await queryRunner.commitTransaction();
+            Logger.log('>> COMMIT INSERTED');
         } catch {
             // TODO: handle error
             await queryRunner.rollbackTransaction();
+            Logger.error('>> ROLLBACK INSERTED');
         } finally {
             await queryRunner.release();
             channel.ack(context.getMessage());

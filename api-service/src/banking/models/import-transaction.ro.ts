@@ -1,17 +1,16 @@
 import {ApiModelProperty} from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
 import {IRowInvalid} from "./banking.interface";
-import {BankingTransactionModel} from "./banking-transaction.model";
 
 export class ImportTransactionRo {
-    constructor(listTransactionImporting: Array<BankingTransactionModel>,
-                listInvalid: Array<IRowInvalid>
+    constructor(listTransactionImporting: number,
+                listInvalidFormat: Array<IRowInvalid>
                 ) {
-        this.listTransactionImporting = listTransactionImporting;
-        this.listInvalid = listInvalid;
+        this.countTransactionImporting = listTransactionImporting;
+        this.listInvalidFormat = listInvalidFormat;
     }
     @ApiModelProperty({description: 'List invalid data of csv', type: Array<IRowInvalid>()})
-    listInvalid: Array<IRowInvalid>;
+    listInvalidFormat: Array<IRowInvalid>;
 
-    @ApiModelProperty({description: 'List importing data of csv', type: Array<BankingTransactionModel>()})
-    listTransactionImporting: Array<BankingTransactionModel>;
+    @ApiModelProperty({description: 'List importing data of csv', type: Number})
+    countTransactionImporting: number;
 }

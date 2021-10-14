@@ -7,5 +7,5 @@ export interface IParseCSV {
 
 export interface IRowInvalid {
     index: number,
-    row: any,
+    row: string,
 }

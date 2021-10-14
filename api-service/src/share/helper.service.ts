@@ -40,8 +40,7 @@ export class HelperService {
         if (str.length !== CSV_VALIDATE.LENGTH_DATE) {
             return true;
         }
-        const a = moment(str, 'DD/MM/YY hh:mm:ss',true);
-        return a.isValid();
+        return moment(str, 'DD/MM/YY hh:mm:ss',true).isValid();
     }
 
     /**

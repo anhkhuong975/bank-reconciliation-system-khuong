@@ -1,9 +1,9 @@
 date,content,amount,type
 21/03/2020 10:20:11,Any text there,100.000,Deposit
-21/03/2020 10:20:12,Any text there,100.001,Deposit
-21/03/2020 10:20:13,Any text there,100.002,Deposit
+21/03/2020 10:20:12,Any text there,100.001,Deposit-fx
+21/03/2020 25:20:13,Any text there,100.002,Deposit
 21/03/2020 10:20:14,Any text there,100.003,Deposit
-21/03/2020 10:20:15,Any text there,100.004,Deposit
+35/03/2020 10:20:15,Any text there,100.004,Deposit
 21/03/2020 10:20:16,Any text there,100.005,Deposit
 21/03/2020 10:20:17,Any text there,100.006,Deposit
 21/03/2020 10:20:100,Any text there,100.007,Deposit
@@ -18,7 +18,7 @@ date,content,amount,type
 21/03/2020 10:20:27,Any text there,100.016,Deposit
 21/03/2020 10:20:28,Any text there,100.017,Deposit
 21/03/2020 10:20:29,Any text there,100.018,Deposit
-21/03/2020 10:20:30,Any text there,-100.000,Withdraw
+21/03/2020 10:20:30,Any text there,-100.000,Withdraw-fx
 21/03/2020 10:20:31,Any text there,-100.001,Withdraw
 21/03/2020 10:20:32,Any text there,-100.002,Withdraw
 21/03/2020 10:20:33,Any text there,-100.003,Withdraw

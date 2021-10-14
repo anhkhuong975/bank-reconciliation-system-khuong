@@ -10,6 +10,7 @@ services:
       - PORT=3001
       - RABBITMQ_HOST=amqp://rabbitmq-service:5672
       - QUEUE=cats_queue
+      - EMIT_TRANSACTION_DIVISION_SIZE=500
     depends_on:
       - transaction-service
 

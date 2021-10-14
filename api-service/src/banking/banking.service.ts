@@ -1,35 +1,48 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 import * as csv from 'csv-parse';
 import {HelperService} from "../share/helper.service";
-import {BankingTransactionModel} from "./banking-transaction.model";
-import {IParseCSV, IRowInvalid} from './banking.interface';
+import {BankingTransactionModel} from "./models/banking-transaction.model";
+import {IParseCSV, IRowInvalid} from './models/banking.interface';
 import {MESSAGE_ERROR, MessagePatternEnum, SERVICE_NAME} from "../share/constain";
 import {ClientProxy} from "@nestjs/microservices";
+import {ConfigService} from "@nestjs/config";
+import * as _ from 'lodash';
+import {ImportTransactionRo} from "./models/import-transaction.ro";
 
 @Injectable()
 export class BankingService {
     constructor(
         @Inject(SERVICE_NAME) private readonly client: ClientProxy,
+        private configService: ConfigService,
     ) {
     }
 
     /**
-     * @description the method of import bank transaction
+     * @description the method of emit the bank transactions to rabbitMq-transaction-service
      *
      * validate transaction and emit to rabbitMQ broker
      *
      * @param file
      *
      */
-    async importBankTransaction(file: Express.Multer.File) {
+    async emitBankTransaction(file: Express.Multer.File): Promise<ImportTransactionRo> {
         const parsed = await this.parseCSV(file);
         if (parsed.listInvalid && parsed.listInvalid.length && parsed.listInvalid[0].index === 0) {
             throw new BadRequestException(MESSAGE_ERROR.FILE_HEADER_INVALID);
         }
-        this.client.emit<IParseCSV, Array<BankingTransactionModel>>(
-            MessagePatternEnum.BANK_TRANSACTION,
-            parsed.listTransaction);
-        return parsed;
+        const response = new ImportTransactionRo(parsed.listTransaction, parsed.listInvalid);
+        if (parsed.listTransaction.length === 0) {
+            return response;
+        }
+        const EMIT_TRANSACTION_DIVISION_SIZE = this.configService.get('EMIT_TRANSACTION_DIVISION_SIZE');
+        // TODO: its low performance. Solution: one loop to divide and emit data
+        const transChunks = _.chunk<BankingTransactionModel>(parsed.listTransaction, EMIT_TRANSACTION_DIVISION_SIZE);
+        transChunks.forEach(transChuck => {
+            this.client.emit<IParseCSV, Array<BankingTransactionModel>>(
+                MessagePatternEnum.BANK_TRANSACTION,
+                transChuck);
+        });
+        return response;
     }
 
     /**

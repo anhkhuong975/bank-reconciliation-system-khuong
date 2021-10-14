@@ -1,5 +1,3 @@
-import exp from "constants";
-
 export enum MESSAGE_ERROR {
     FILE_EXPECTED = 'Validation failed. File expected',
     ONLY_ONE = 'Validation failed. Only one file in a progress',
@@ -19,8 +17,6 @@ export const CSV_VALIDATE = {
     COLUMN_NUM: 4,
     TRANSACTION_TYPE: ['Deposit', "Withdraw"],
 };
-
-export type TRANSACTION_TYPE = 'Deposit' | 'Withdraw';
 
 export const SERVICE_NAME = 'api-service';
 

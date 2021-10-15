@@ -1,5 +1,40 @@
 version: '3.7'
 services:
+  mysql-db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'bank_transaction'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '12345678'
+      MYSQL_ROOT_PASSWORD: '12345678'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  keycloak-service:
+    image: quay.io/keycloak/keycloak:15.0.2
+    #    container_name: keycloak-service
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=
+
+  rabbitmq-service:
+    image: rabbitmq:3.9-management
+    #    container_name: rabbitmq-service
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+
   api-service:
     build: api-service
 #    container_name: api-service
@@ -32,39 +67,3 @@ services:
       - rabbitmq-service
       - keycloak-service
       - mysql-db
-
-  keycloak-service:
-    image: quay.io/keycloak/keycloak:15.0.2
-#    container_name: keycloak-service
-    restart: always
-    ports:
-      - 8080:8080
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=
-
-  rabbitmq-service:
-    image: rabbitmq:3.9-management
-#    container_name: rabbitmq-service
-    restart: always
-    ports:
-      - 5672:5672
-      - 15672:15672
-
-  mysql-db:
-    image: mysql:5.7
-    restart: always
-#    container_name: mysql-db
-    environment:
-      MYSQL_DATABASE: 'bank_transaction'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: '12345678'
-      MYSQL_ROOT_PASSWORD: '12345678'
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10

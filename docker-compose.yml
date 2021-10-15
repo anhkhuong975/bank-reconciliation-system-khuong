@@ -4,17 +4,20 @@ services:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: 'bank_transaction'
+      MYSQL_DATABASE: 'abc_bank'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: '12345678'
       MYSQL_ROOT_PASSWORD: '12345678'
     ports:
       - '3306:3306'
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
     expose:
       - '3306'
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
+      timeout: 30s
       retries: 10
 
   keycloak-service:
@@ -34,6 +37,11 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 5
 
   api-service:
     build: api-service
@@ -48,6 +56,7 @@ services:
       - EMIT_TRANSACTION_DIVISION_SIZE=500
     depends_on:
       - transaction-service
+      - rabbitmq-service
 
   transaction-service:
     build: transaction-service
@@ -61,7 +70,7 @@ services:
       - DB_PORT=3306
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
-      - DB_DATABASE=bank_transaction
+      - DB_DATABASE=abc_bank
       - DB_SYNCHRONIZE=true
     depends_on:
       - rabbitmq-service

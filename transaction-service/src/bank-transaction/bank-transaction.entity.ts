@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {TransactionTypeEnum} from "../share/constain";
 
-@Entity(('bank-transaction'))
+@Entity({name: 'bank-transaction'})
 export class BankTransactionEntity {
     @PrimaryGeneratedColumn()
     id: number;

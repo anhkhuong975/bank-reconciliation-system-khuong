@@ -5,4 +5,5 @@ export class BankingTransactionModel {
     content: string;
     amount: string;
     type: TransactionTypeEnum;
+    _idx: number;
 }

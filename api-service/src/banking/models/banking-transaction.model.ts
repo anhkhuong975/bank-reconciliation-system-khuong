@@ -3,4 +3,5 @@ export class BankingTransactionModel {
     content: string;
     amount: string;
     type: string;
+    _idx: number;
 }

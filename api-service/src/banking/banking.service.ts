@@ -83,6 +83,7 @@ export class BankingService {
                             content: item[1],
                             amount: item[2],
                             type: item[3],
+                            _idx: index,
                         };
                         listTransaction.push(transactionModel);
                     }

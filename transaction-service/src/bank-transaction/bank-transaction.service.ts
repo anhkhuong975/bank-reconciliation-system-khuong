@@ -44,6 +44,7 @@ export class BankTransactionService {
         } catch {
             // TODO: handle error
             await queryRunner.rollbackTransaction();
+            channel.nack(context.getMessage());
             Logger.error('>> ROLLBACK INSERTED');
         } finally {
             await queryRunner.release();

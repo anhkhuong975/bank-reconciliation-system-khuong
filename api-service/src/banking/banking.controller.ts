@@ -25,7 +25,6 @@ export class BankingController {
             type: 'object',
             properties: {
                 file: {
-                    //property
                     type: 'string',
                     format: 'binary',
                 },

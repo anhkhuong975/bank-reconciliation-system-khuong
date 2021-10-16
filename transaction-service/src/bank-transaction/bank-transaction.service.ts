@@ -17,6 +17,7 @@ export class BankTransactionService {
      *
      */
     async importData(data: Array<BankingTransactionModel>, context: RmqContext) {
+        console.log('START progress the rabbit data');
         const channel = context.getChannelRef();
         if (data === null || data === undefined || data.length === 0) {
             // TODO: handle error of type
@@ -40,15 +41,16 @@ export class BankTransactionService {
                 .values(bankTransactionEntities)
                 .execute();
             await queryRunner.commitTransaction();
+            channel.ack(context.getMessage());
             Logger.log('>> COMMIT INSERTED');
         } catch {
-            // TODO: handle error
+            // TODO: handle error and write log
             await queryRunner.rollbackTransaction();
             channel.nack(context.getMessage());
-            Logger.error('>> ROLLBACK INSERTED');
+            Logger.error('>> ROLLBACK ERROR');
         } finally {
             await queryRunner.release();
-            channel.ack(context.getMessage());
+            console.log('DONE progress rabbit data');
         }
     }
 }

@@ -15,10 +15,10 @@ services:
       - ./init.sql:/data/application/init.sql
     expose:
       - '3306'
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 30s
-      retries: 10
+#    healthcheck:
+#      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#      timeout: 30s
+#      retries: 10
 
   keycloak-service:
     image: quay.io/keycloak/keycloak:15.0.2
@@ -29,6 +29,9 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/realm-export.json
+    volumes:
+      - ./realm-export.json:/tmp/realm-export.json
 
   rabbitmq-service:
     image: rabbitmq:3.9-management
@@ -54,10 +57,10 @@ services:
       - RABBITMQ_HOST=amqp://rabbitmq-service:5672
       - QUEUE=cats_queue
       - EMIT_TRANSACTION_DIVISION_SIZE=500
-      - KEYCLOAK_AUTH_SERVICE_URL=keycloak-service:8080/auth
+      - KEYCLOAK_AUTH_SERVICE_URL=http://keycloak-service:8080/auth
       - KEYCLOAK_REALM=abc_bank
       - KEYCLOAK_CLIENT_ID=api-transaction-service
-      - KEYCLOAK_SECRET=f3121929-7b4f-4314-a95c-f78c0f4f7869
+      - KEYCLOAK_SECRET=48464a7a-f5f3-4893-98c2-a05ccd99c3d9
     depends_on:
       - transaction-service
       - rabbitmq-service

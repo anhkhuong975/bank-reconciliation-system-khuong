@@ -75,7 +75,7 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
       - DB_DATABASE=abc_bank
-      - DB_SYNCHRONIZE=true
+      - DB_SYNCHRONIZE=false
     depends_on:
       - rabbitmq-service
       - keycloak-service

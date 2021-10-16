@@ -3,24 +3,27 @@ import { BankingService } from './banking.service';
 import { BankingController } from './banking.controller';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {SERVICE_NAME} from "../share/constain";
-import {ConfigModule} from "@nestjs/config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    ClientsModule.register([
-      {
+    ClientsModule.registerAsync([{
+      name: SERVICE_NAME,
+      imports:[ConfigModule],
+      useFactory: (configService: ConfigService) => ({
         name: SERVICE_NAME,
         transport: Transport.RMQ,
         options: {
-          urls: [process.env.RABBITMQ_HOST],
-          queue: process.env.QUEUE,
+          urls: [configService.get('RABBITMQ_HOST').toString()],
+          queue: configService.get('QUEUE'),
           queueOptions: {
             durable: false
           },
         }
-      },
-    ]),
+      }),
+      inject: [ConfigService]
+    }])
   ],
   providers: [BankingService],
   controllers: [BankingController],

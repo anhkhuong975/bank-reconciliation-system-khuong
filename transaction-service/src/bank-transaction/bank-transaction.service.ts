@@ -1,11 +1,16 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {RmqContext} from "@nestjs/microservices";
+import {Inject, Injectable, Logger} from '@nestjs/common';
+import {ClientProxy, RmqContext} from "@nestjs/microservices";
 import {BankingTransactionModel} from "./bank-transaction.model";
 import {getConnection} from "typeorm";
 import {BankTransactionEntity} from "./bank-transaction.entity";
+import {PATTERN_LOG, SERVICE_NAME} from "../share/constain";
 
 @Injectable()
 export class BankTransactionService {
+    constructor(
+        @Inject(SERVICE_NAME) private readonly client: ClientProxy,
+    ) {
+    }
 
 
     /**
@@ -59,6 +64,14 @@ export class BankTransactionService {
         } finally {
             await queryRunner.release();
             console.log('DONE progress rabbit data');
+            this.emitLog('log emit');
         }
+    }
+
+    /**
+     * @description emit log data to rabbit broker
+     */
+    protected emitLog(data: string) {
+        this.client.emit<any, any>(PATTERN_LOG, data);
     }
 }

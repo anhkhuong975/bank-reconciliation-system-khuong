@@ -80,6 +80,7 @@ services:
       - DB_PASSWORD=12345678
       - DB_DATABASE=abc_bank
       - DB_SYNCHRONIZE=false
+      - QUEUE_LOG=queue_log
     depends_on:
       - rabbitmq-service
       - keycloak-service

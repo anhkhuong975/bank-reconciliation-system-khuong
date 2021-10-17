@@ -15,10 +15,10 @@ services:
       - ./init.sql:/data/application/init.sql
     expose:
       - '3306'
-#    healthcheck:
-#      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-#      timeout: 30s
-#      retries: 10
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 30s
+      retries: 10
 
   keycloak-service:
     image: quay.io/keycloak/keycloak:15.0.2

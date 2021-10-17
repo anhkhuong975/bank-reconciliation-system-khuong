@@ -1,4 +1,5 @@
-# TÀI LIỆU THIẾT KẾ
+# TÀI LIỆU THIẾT KẾ 
+###### [DEMO VIDEO](https://drive.google.com/file/d/1JkKpiCGeHHgfADr82LM0laBQK2ebCQSY/view?usp=sharing)
 
 ## Sơ đồ hệ thống
 ![Sơ đồ hệ thống](./brs-flow.jpg)

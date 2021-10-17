@@ -12,7 +12,7 @@ export class BankTransactionController {
     }
 
     @MessagePattern(MessagePatternEnum.BANK_TRANSACTION)
-    async getNotifications(@Payload() data: Array<BankingTransactionModel>, @Ctx() context: RmqContext) {
+    async handleBankTransaction(@Payload() data: Array<BankingTransactionModel>, @Ctx() context: RmqContext) {
         return this.bankTransactionService.importData(data, context);
     }
 }

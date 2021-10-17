@@ -4,40 +4,85 @@ import {ValidateFilePipe} from "../share/validate-file.pipe";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {ClientProxy, ClientsModule, Transport} from "@nestjs/microservices";
 import {SERVICE_NAME} from "../share/constain";
-import {BadRequestException} from "@nestjs/common";
 import {ImportTransactionRo} from "./models/import-transaction.ro";
 import * as fs from "fs";
 
-const TS_MOCK = {
-  "listTransaction": [
+const MOCK_VLD_EX =
     {
-      "date": "21/03/2020 10:20:11",
-      "content": "Any text there",
-      "amount": "100.00",
-      "type": "Deposit"
-    },
-    {
-      "date": "21/03/2020 10:20:13",
-      "content": "Any text there",
-      "amount": "-100.002",
-      "type": "Withdraw"
-    }
-  ],
-  "listInvalid": [
-    {
-      "index": 2,
-      "row": "21/03/2020 10:20:12,Any text there,100.001,Deposit-fx"
-    },
-    {
-      "index": 4,
-      "row": "21/03/2020 10:20:13,Any text there,-100.002,Withdraw-wr"
-    },
-    {
-      "index": 5,
-      "row": "21/03/2020 10:20:1200,Any text there,100.001,Deposit"
-    }
-  ]
-};
+      "listTransaction": [
+        {
+          "date": "21/03/2020 10:20:11",
+          "content": "it is content",
+          "amount": "+300.000",
+          "type": "Deposit",
+          "_idx": 0
+        },
+        {
+          "date": "21/03/2020 10:20:11",
+          "content": "it is content",
+          "amount": "-300.000",
+          "type": "Withdraw",
+          "_idx": 5
+        }
+      ],
+      "listInvalid": [
+        {
+          "index": 1,
+          "row": "{\"date\":\"2100/03/2020 10:20:11\",\"content\":\"it is content\",\"amount\":\"+300.000\",\"type\":\"Deposit\"}"
+        },
+        {
+          "index": 2,
+          "row": "{\"date\":\"21/03/2020 10:20:11\",\"content\":\"it is content\",\"amount\":\"-300.000\",\"type\":\"Deposit\"}"
+        },
+        {
+          "index": 3,
+          "row": "{\"date\":\"21/03/2020 10:20:11\",\"content\":\"it is content\",\"amount\":\"+300.000\",\"type\":\"Deposit-wrong\"}"
+        },
+        {
+          "index": 4,
+          "row": "{\"date\":\"21/03/2020 10:20:11\",\"content\":\"it is content\",\"amount\":\"+300.000wrong\",\"type\":\"Deposit\"}"
+        }
+      ]
+    };
+
+const MOCK_VLD_IN: Array<{date, content, amount, type}> = [
+  {
+    date: '21/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '+300.000',
+    type: 'Deposit'
+  },
+  {
+    date: '2100/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '+300.000',
+    type: 'Deposit'
+  },
+  {
+    date: '21/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '-300.000',
+    type: 'Deposit'
+  },
+  {
+    date: '21/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '+300.000',
+    type: 'Deposit-wrong'
+  },
+  {
+    date: '21/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '+300.000wrong',
+    type: 'Deposit'
+  },
+  {
+    date: '21/03/2020 10:20:11',
+    content: 'it is content',
+    amount: '-300.000',
+    type: 'Withdraw'
+  }
+];
 
 describe('PipeTransform File', () => {
   const pipe = new ValidateFilePipe();
@@ -47,9 +92,14 @@ describe('PipeTransform File', () => {
     expect(pipe.transform(file, {} as any)).toBe(file);
   });
 
+  it('Should be return file value', () => {
+    const file = {mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'} as Express.Multer.File;
+    expect(pipe.transform(file, {} as any)).toBe(file);
+  });
+
   // it('Should be...',  async () => {
-  //   const file = {mimetype: '53122222MM 49 js'} as Express.Multer.File;
-  //   await expect(pipe.transform(file, {} as any)).rejects.toThrow(BadRequestException);
+  //   const file = {mimetype: 'js'} as Express.Multer.File;
+  //   await expect(pipe.transform(file, {} as any)).toThrowError();
   // });
 });
 
@@ -87,18 +137,13 @@ describe('BankingService', () => {
     expect(bankingService).toBeDefined();
   });
 
-  it('should be throw exception with invalid header',   async () => {
-    jest.spyOn<any, any>(bankingService, 'parseCSV')
-        .mockImplementation(() => Promise.resolve({listInvalid: [{index: 0}]}));
-    const temp = bankingService.emitBankTransaction({} as any);
-    await expect(temp).rejects.toThrow(BadRequestException);
-  });
-
   it('should be return if listTransaction null',   async () => {
-    jest.spyOn<any, any>(bankingService, 'parseCSV')
+    jest.spyOn<any, any>(bankingService, 'validateTransactions')
         .mockImplementation(() => Promise.resolve({listInvalid: [], listTransaction: []}));
     const response = new ImportTransactionRo(0, []);
-    const temp = await bankingService.emitBankTransaction({} as any);
+    const file: any = {};
+    file.buffer = fs.readFileSync(__dirname + '/../../test-resources/test-for-type.csv');
+    const temp = await bankingService.emitBankTransaction(file as Express.Multer.File);
     await expect(temp).toEqual(response);
   });
 
@@ -106,7 +151,7 @@ describe('BankingService', () => {
     const file: any = {};
     file.buffer = fs.readFileSync(__dirname + '/../../test-resources/test-for-type.csv');
     const serviceProto = Object.getPrototypeOf(bankingService);
-    const temp = await serviceProto.parseCSV(file as any);
-    expect(temp).toEqual(TS_MOCK);
+    const temp = await serviceProto.validateTransactions(MOCK_VLD_IN);
+    expect(temp).toEqual(MOCK_VLD_EX);
   });
 });

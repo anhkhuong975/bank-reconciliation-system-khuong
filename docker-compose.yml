@@ -85,7 +85,7 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
       - DB_DATABASE=abc_bank
-      - DB_SYNCHRONIZE=false
+      - DB_SYNCHRONIZE=true
       - QUEUE_LOG=queue_log
     depends_on:
       - rabbitmq-service

@@ -71,7 +71,7 @@ export class BankTransactionService {
     /**
      * @description emit log data to rabbit broker
      */
-    protected emitLog(data: string) {
+    protected async emitLog(data: string) {
         this.client.emit<any, any>(PATTERN_LOG, data);
     }
 }

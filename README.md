@@ -8,7 +8,7 @@
 ## Mô tả các thành phần
 
 |  stt | docker container |  thư mục | Mô tả |
-| :--- |: --------------- | :------- | :-----|
+| ---- | ---------------- | -------- | ------|
 | 1  |  mysql-db  |  | Lưu trử các transactions sau khi được import  |
 | 2  |  keycloak-service | |  Xử lý-chứng thực người dùng, cụ thể là chức thực **OAuth2**  `api-service` |
 | 3  |  rabbitmq-service | | Quản lý hàng đợi `queue` cho các yêu cầu import transaction|
@@ -43,7 +43,7 @@ docker-compose up -d --build
 
 ### Thông tin truy cập:
 |  stt | service              | thông tin |
-| :--- |: ------------------- |:----------|
+| ---- | -------------------- |-----------|
 | 1    |  mysql-db            |- Host: localhost <br/>- Port: 3306 <br/> - Username: root <br/>- Password: 123456|
 | 2    |  keycloak-service    |- Url: http://localhost:8080/auth/admin <br/> - Username: admin <br/>- Password: admin|
 | 3    |  rabbitmq-service    |- Url: http://localhost:15672/ <br/> - Username: guest <br/>- Password: guest|

@@ -4,7 +4,7 @@ import {
     PipeTransform,
     BadRequestException,
 } from '@nestjs/common';
-import {MESSAGE_ERROR} from "./constain";
+import {CSV_VALIDATE, MESSAGE_ERROR} from "./constain";
 
 @Injectable()
 export class ValidateFilePipe implements PipeTransform {
@@ -20,9 +20,9 @@ export class ValidateFilePipe implements PipeTransform {
             throw new BadRequestException(MESSAGE_ERROR.ONLY_ONE);
         }
 
-        // if (file.mimetype !== 'text/csv') {
-        //     throw new BadRequestException(MESSAGE_ERROR.ONLY_CSV);
-        // }
+        if (!CSV_VALIDATE.TYPE_FILE.includes(file.mimetype)) {
+            throw new BadRequestException(MESSAGE_ERROR.ONLY_CSV);
+        }
 
         return file;
     }

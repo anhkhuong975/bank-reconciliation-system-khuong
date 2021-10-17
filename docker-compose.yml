@@ -10,7 +10,6 @@ services:
       MYSQL_ROOT_PASSWORD: '12345678'
     ports:
       - '3306:3306'
-
     expose:
       - '3306'
     healthcheck:

@@ -44,7 +44,7 @@ docker-compose up -d --build
 ### Thông tin truy cập:
 |  stt | service              | thông tin |
 | ---- | -------------------- |-----------|
-| 1    |  mysql-db            |- Host: localhost <br/>- Port: 3306 <br/> - Username: root <br/>- Password: 123456|
+| 1    |  mysql-db            |- Host: localhost <br/>- Port: 3306 <br/> - Username: root <br/>- Password: 12345678|
 | 2    |  keycloak-service    |- Url: http://localhost:8080/auth/admin <br/> - Username: admin <br/>- Password: admin|
 | 3    |  rabbitmq-service    |- Url: http://localhost:15672/ <br/> - Username: guest <br/>- Password: guest|
 | 4    |  api-service         |- Host: localhost <br/> - Port: 3001 <br/> - Swagger url: http://localhost:3001/api/|

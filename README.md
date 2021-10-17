@@ -32,12 +32,22 @@ npm install
 npm run test
 ```
 
-### run all services:
+### run services:
 
 - Đảm bảo các ports sau trong trạng thái không được sử dụng: `3306`, `8080`, `15672`, `5672`, `3001`
-- Trên giao diện terminal, di chuyển đến thư mục chính của project, chạy lệnh:
+
+- **Run: mysql-db, keycloak-service, rabbitmq-service, transaction-service**.
+<br/>- Trên giao diện terminal, di chuyển đến [thư mục chính]() của project, chạy lệnh:
 ```docker
 docker-compose up -d --build
+```
+
+- **Run: api-service**:
+<br/> - Tại thư mục [api-service](api-service), copy file [.env.example](api-service/.env.example) thành file `.env`
+<br/> - Trên giao diện terminal, di chuyển đến thư mục [api-service](api-service), chạy lần lượt lệnh:
+```docker
+npm install
+npm run start
 ```
 - Sau khi các docker container run DONE, tuy nhiên cần đợi thêm khoản 1 phút để các services được load đầy đủ.
 
@@ -56,6 +66,7 @@ docker-compose up -d --build
 ## Hướng dẫn sử dụng (sau khi đã chạy hệ thống)
 
 ### Tạo mới USER
+[Hướng dẫn tạo mới keycloak user tại đây](./CREATE-USER-KEYCLOAK.pdf)
 
 ### Lấy token
 Trên giao diện terminal, chạy lệnh :
@@ -86,7 +97,7 @@ curl --location --request POST 'http://localhost:3001/banking/import-bank-transa
 Params gồm có: <br/>
 - `{{access_token}}`: là access_token từ response ở bước lấy token
 - `{{file_path}}`: là đường dẫn tuyệt đối của file CSV cần import.
-- Các file mẫu có sẳn trong thư mục `data-sheet-sample`. Dữ liệu mẫu đã bao gồm các rows lỗi định dạng
+- Các file mẫu có sẳn trong thư mục [data-sheet-sample](data-sheet-sample). Dữ liệu mẫu đã bao gồm các rows lỗi định dạng
 
 Response gồm có: 
 - `countTransactionImporting`: tổng số lượng transaction đang được insert

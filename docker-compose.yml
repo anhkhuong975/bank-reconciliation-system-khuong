@@ -54,25 +54,25 @@ services:
           #cpus: '0.0001'
           memory: 512M
 
-  api-service:
-    build: api-service
-#    container_name: api-service
-    restart: always
-    ports:
-      - 3001:3001
-    environment:
-      - PORT=3001
-      - RABBITMQ_HOST=amqp://rabbitmq-service:5672
-      - QUEUE=cats_queue
-      - EMIT_TRANSACTION_DIVISION_SIZE=200
-      - KEYCLOAK_AUTH_SERVICE_URL=http://keycloak-service:8080/auth
-      - KEYCLOAK_REALM=abc_bank
-      - KEYCLOAK_CLIENT_ID=api-transaction-service
-      - KEYCLOAK_SECRET=48464a7a-f5f3-4893-98c2-a05ccd99c3d9
-    depends_on:
-      - transaction-service
-      - rabbitmq-service
-      - keycloak-service
+#  api-service:
+#    build: api-service
+##    container_name: api-service
+#    restart: always
+#    ports:
+#      - 3001:3001
+#    environment:
+#      - PORT=3001
+#      - RABBITMQ_HOST=amqp://rabbitmq-service:5672
+#      - QUEUE=cats_queue
+#      - EMIT_TRANSACTION_DIVISION_SIZE=200
+#      - KEYCLOAK_AUTH_SERVICE_URL=http://keycloak-service:8080/auth
+#      - KEYCLOAK_REALM=abc_bank
+#      - KEYCLOAK_CLIENT_ID=api-transaction-service
+#      - KEYCLOAK_SECRET=48464a7a-f5f3-4893-98c2-a05ccd99c3d9
+#    depends_on:
+#      - transaction-service
+#      - rabbitmq-service
+#      - keycloak-service
 
   transaction-service:
     build: transaction-service

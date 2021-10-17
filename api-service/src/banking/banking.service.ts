@@ -1,8 +1,8 @@
-import {BadRequestException, Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {HelperService} from "../share/helper.service";
 import {BankingTransactionModel} from "./models/banking-transaction.model";
 import {IParseCSV, IRowInvalid} from './models/banking.interface';
-import {MESSAGE_ERROR, MessagePatternEnum, SERVICE_NAME} from "../share/constain";
+import {MessagePatternEnum, SERVICE_NAME} from "../share/constain";
 import {ClientProxy} from "@nestjs/microservices";
 import {ConfigService} from "@nestjs/config";
 import * as _ from 'lodash';
@@ -30,15 +30,14 @@ export class BankingService {
         const sheet = workbook.SheetNames;
         const dataRaw: Array<{date, content, amount, type}> = XLSX.utils.sheet_to_json(workbook.Sheets[sheet[0]]);
         const parsed = await this.validateTransactions(dataRaw);
-        if (parsed.listInvalid && parsed.listInvalid.length && parsed.listInvalid[0].index === 0) {
-            throw new BadRequestException(MESSAGE_ERROR.FILE_HEADER_INVALID);
-        }
+
+        // TODO: its low performance. Solution: one loop to validate, divide and emit data
+
         const response = new ImportTransactionRo(parsed.listTransaction.length, parsed.listInvalid);
         if (parsed.listTransaction.length === 0) {
             return response;
         }
         const EMIT_TRANSACTION_DIVISION_SIZE = this.configService.get('EMIT_TRANSACTION_DIVISION_SIZE');
-        // TODO: its low performance. Solution: one loop to divide and emit data
         const transChunks = _.chunk<BankingTransactionModel>(parsed.listTransaction, EMIT_TRANSACTION_DIVISION_SIZE);
         transChunks.forEach(transChuck => {
             this.emitTransactions(MessagePatternEnum.BANK_TRANSACTION, transChuck);
@@ -74,10 +73,10 @@ export class BankingService {
                 listInvalid.push({index, row: JSON.stringify(item)});
             } else {
                 const transactionModel: BankingTransactionModel = {
-                    date: item[0],
-                    content: item[1],
-                    amount: item[2],
-                    type: item[3],
+                    date: item.date,
+                    content: item.content,
+                    amount: item.amount,
+                    type: item.type,
                     _idx: index,
                 };
                 listTransaction.push(transactionModel);

@@ -9,7 +9,7 @@
 
 |  stt | docker container |  thư mục | Mô tả |
 | ---- | ---------------- | -------- | ------|
-| 1  |  mysql-db  |  | Lưu trử các transactions sau khi được import  |
+| 1  |  mysql-db  |  | Lưu trữ các transactions sau khi được import  |
 | 2  |  keycloak-service | |  Xử lý-chứng thực người dùng, cụ thể là chứng thực **OAuth2** cho `api-service` |
 | 3  |  rabbitmq-service | | Quản lý hàng đợi `queue` cho các yêu cầu import transaction|
 | 4  |  api-service | api-service |- Triển khai api cho người dùng import transaction <br/>- API được chứng thực OAuth2 từ `keycloak-service` <br/>- Kiểm tra tính hợp lệ của dữ liệu. <br/>- Gửi yêu cầu insert lên hàng đợi `rabbitmq-service` |

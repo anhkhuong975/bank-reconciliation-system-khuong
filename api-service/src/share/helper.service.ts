@@ -1,5 +1,6 @@
-import {CSV_VALIDATE} from "./constain";
+import {CSV_VALIDATE, TransactionTypeEnum} from "./constain";
 import * as moment from "moment";
+
 const { Readable } = require('stream');
 
 export class HelperService {
@@ -57,6 +58,29 @@ export class HelperService {
      */
     public static isValidContent(str: string): boolean {
         return str.length >= CSV_VALIDATE.LENGTH_CONTENT;
+    }
+
+    /**
+     * @description check validate amount type with typeTransaction
+     * @param str
+     * @param typeTransaction
+     */
+    public static isValidAmount(str: string, typeTransaction: TransactionTypeEnum): boolean {
+        const reAmount = Number(str);
+        if (isNaN(reAmount)) {
+            return true;
+        }
+        if (typeTransaction === TransactionTypeEnum.Deposit) {
+            if (reAmount < 0) {
+                return true;
+            }
+        }
+        if (typeTransaction === TransactionTypeEnum.Withdraw) {
+            if (reAmount > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

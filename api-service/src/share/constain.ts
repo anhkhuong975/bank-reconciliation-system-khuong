@@ -25,6 +25,11 @@ export const CSV_VALIDATE = {
     ]
 };
 
+export enum TransactionTypeEnum {
+    Deposit = 'Deposit',
+    Withdraw = 'Withdraw',
+}
+
 export const SERVICE_NAME = 'api-service';
 
 export enum MessagePatternEnum {

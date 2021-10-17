@@ -85,7 +85,8 @@ curl --location --request POST 'http://localhost:3001/banking/import-bank-transa
 ```
 Params gồm có: <br/>
 - `{{access_token}}`: là access_token từ response ở bước lấy token
-- `{{file_path}}`: là đường dẫn tuyệt đối của file CSV cần import. Các file mẫu có sẳn trong thư mục `data-sheet-sample`
+- `{{file_path}}`: là đường dẫn tuyệt đối của file CSV cần import.
+- Các file mẫu có sẳn trong thư mục `data-sheet-sample`. Dữ liệu mẫu đã bao gồm các rows lỗi định dạng
 
 Response gồm có: 
 - `countTransactionImporting`: tổng số lượng transaction đang được insert

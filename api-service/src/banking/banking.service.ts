@@ -71,7 +71,10 @@ export class BankingService {
                 listInvalid.push({index, row: JSON.stringify(item)});
             } else if(HelperService.isValidContent(item.content)) {
                 listInvalid.push({index, row: JSON.stringify(item)});
-            } else {
+            } else if (HelperService.isValidAmount(item.amount, item.type)) {
+                listInvalid.push({index, row: JSON.stringify(item)});
+            } else
+            {
                 const transactionModel: BankingTransactionModel = {
                     date: item.date,
                     content: item.content,

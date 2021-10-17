@@ -5,7 +5,7 @@
 
 ---
 
-## Mô tả các thành 
+## Mô tả các thành phần
 
 |  stt | docker container |  thư mục | Mô tả |
 | :--- |: --------------- | :------- | :-----|

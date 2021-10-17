@@ -21,7 +21,8 @@ export const CSV_VALIDATE = {
         'text/csv',
         'application/csv',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-excel'
+        'application/vnd.ms-excel',
+        'application/octet-stream',
     ]
 };
 

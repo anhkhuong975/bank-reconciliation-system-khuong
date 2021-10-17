@@ -52,6 +52,14 @@ export class HelperService {
     }
 
     /**
+     * @description chech max length of content
+     * @param str
+     */
+    public static isValidContent(str: string): boolean {
+        return str.length >= CSV_VALIDATE.LENGTH_CONTENT;
+    }
+
+    /**
      * @param binary Buffer
      * returns readableInstanceStream Readable
      */

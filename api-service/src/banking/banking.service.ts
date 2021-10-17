@@ -1,5 +1,4 @@
 import {BadRequestException, Inject, Injectable} from '@nestjs/common';
-import * as csv from 'csv-parse';
 import {HelperService} from "../share/helper.service";
 import {BankingTransactionModel} from "./models/banking-transaction.model";
 import {IParseCSV, IRowInvalid} from './models/banking.interface';
@@ -8,6 +7,7 @@ import {ClientProxy} from "@nestjs/microservices";
 import {ConfigService} from "@nestjs/config";
 import * as _ from 'lodash';
 import {ImportTransactionRo} from "./models/import-transaction.ro";
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class BankingService {
@@ -26,7 +26,10 @@ export class BankingService {
      *
      */
     async emitBankTransaction(file: Express.Multer.File): Promise<ImportTransactionRo> {
-        const parsed = await this.parseCSV(file);
+        const workbook = XLSX.read(file.buffer);
+        const sheet = workbook.SheetNames;
+        const dataRaw: Array<{date, content, amount, type}> = XLSX.utils.sheet_to_json(workbook.Sheets[sheet[0]]);
+        const parsed = await this.validateTransactions(dataRaw);
         if (parsed.listInvalid && parsed.listInvalid.length && parsed.listInvalid[0].index === 0) {
             throw new BadRequestException(MESSAGE_ERROR.FILE_HEADER_INVALID);
         }
@@ -55,47 +58,35 @@ export class BankingService {
     }
 
     /**
-     * @description the method to parse csv file to array
-     * @param file
+     * @description validate transactions
      * @return IParseCSV
+     * @param transaction
      */
-    protected async parseCSV(file: Express.Multer.File): Promise<IParseCSV> {
+    protected validateTransactions(transaction: Array<{date, content, amount, type}>) {
         const listTransaction: Array<BankingTransactionModel> = [];
         const listInvalid: IRowInvalid[] = [];
-        const parsePromise = new Promise<IParseCSV>((resolve) => {
-            let index: number = 0;
-            HelperService.bufferToStream(file.buffer)
-                .pipe(csv())
-                .on('data', (item) => {
-                    if (index === 0) {
-                        if (HelperService.isValidHeaderCSV(item)) {
-                            listInvalid.push({index, row: item.toString()});
-                        }
-                    } else if (HelperService.isValidRow(item)) {
-                        listInvalid.push({index, row: item.toString()});
-                    } else if (HelperService.isValidDate(item[0])) {
-                        listInvalid.push({index, row: item.toString()});
-                    } else if (HelperService.isValidType(item[3])) {
-                        listInvalid.push({index, row: item.toString()});
-                    } else {
-                        const transactionModel: BankingTransactionModel = {
-                            date: item[0],
-                            content: item[1],
-                            amount: item[2],
-                            type: item[3],
-                            _idx: index,
-                        };
-                        listTransaction.push(transactionModel);
-                    }
-                    index = index + 1;
-                })
-                .on('end',function(){
-                    resolve({
-                        listTransaction,
-                        listInvalid,
-                    })
-                });
+        transaction.forEach((item, index) => {
+            if (HelperService.isValidDate(item.date)) {
+                listInvalid.push({index, row: JSON.stringify(item)});
+            } else if (HelperService.isValidType(item.type)) {
+                listInvalid.push({index, row: JSON.stringify(item)});
+            } else if(HelperService.isValidContent(item.content)) {
+                listInvalid.push({index, row: JSON.stringify(item)});
+            } else {
+                const transactionModel: BankingTransactionModel = {
+                    date: item[0],
+                    content: item[1],
+                    amount: item[2],
+                    type: item[3],
+                    _idx: index,
+                };
+                listTransaction.push(transactionModel);
+            }
+            index = index + 1;
         });
-        return await parsePromise;
+        return {
+            listTransaction,
+            listInvalid,
+        };
     }
 }

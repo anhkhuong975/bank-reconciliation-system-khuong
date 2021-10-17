@@ -9,7 +9,7 @@ export class BankTransactionEntity {
     @Column({length: 50, type: "varchar", nullable: false})
     date: string;
 
-    @Column({length: 50, type: 'varchar', nullable: false})
+    @Column({length: 225, type: 'varchar', nullable: false})
     content: string;
 
     @Column({length: 50, type: 'varchar', nullable: false})

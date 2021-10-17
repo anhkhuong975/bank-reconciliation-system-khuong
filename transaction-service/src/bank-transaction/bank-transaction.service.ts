@@ -56,15 +56,17 @@ export class BankTransactionService {
             await queryRunner.commitTransaction();
             channel.ack(context.getMessage());
             Logger.log(`>> COMMIT INSERTED. Index: [${data[0]._idx},${data[data.length - 1]._idx}]`);
+            // this.emitLog('log emit');
         } catch {
             // TODO: handle error and write log
             await queryRunner.rollbackTransaction();
-            channel.nack(context.getMessage());
+            // channel.nack(context.getMessage()); // No retry emit
             Logger.error(`>> ROLLBACK ERROR. Index: [${data[0]._idx},${data[data.length - 1]._idx}]`);
         } finally {
             await queryRunner.release();
+            channel.ack(context.getMessage());
             console.log('DONE progress rabbit data');
-            this.emitLog('log emit');
+            // this.emitLog('log emit');
         }
     }
 

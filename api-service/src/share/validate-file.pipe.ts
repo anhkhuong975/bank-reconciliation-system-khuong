@@ -20,9 +20,9 @@ export class ValidateFilePipe implements PipeTransform {
             throw new BadRequestException(MESSAGE_ERROR.ONLY_ONE);
         }
 
-        if (file.mimetype !== 'text/csv') {
-            throw new BadRequestException(MESSAGE_ERROR.ONLY_CSV);
-        }
+        // if (file.mimetype !== 'text/csv') {
+        //     throw new BadRequestException(MESSAGE_ERROR.ONLY_CSV);
+        // }
 
         return file;
     }

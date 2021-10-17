@@ -15,6 +15,7 @@ export const CSV_VALIDATE = {
     },
     LENGTH_DATE: 19,
     COLUMN_NUM: 4,
+    LENGTH_CONTENT: 225,
     TRANSACTION_TYPE: ['Deposit', "Withdraw"],
 };
 

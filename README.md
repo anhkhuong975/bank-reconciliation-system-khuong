@@ -13,7 +13,7 @@
 | 1  |  mysql-db  |  | Lưu trữ các transactions sau khi được import  |
 | 2  |  keycloak-service | |  Xử lý-chứng thực người dùng, cụ thể là chứng thực **OAuth2** cho `api-service` |
 | 3  |  rabbitmq-service | | Quản lý hàng đợi `queue` cho các yêu cầu import transaction|
-| 4  |  | api-service |- Triển khai api cho người dùng import transaction <br/>- API được chứng thực OAuth2 từ `keycloak-service` <br/>- Kiểm tra tính hợp lệ của dữ liệu. <br/>- Gửi yêu cầu insert lên hàng đợi `rabbitmq-service` |
+| 4  | | api-service |- Triển khai api cho người dùng import transaction <br/>- API được chứng thực OAuth2 từ `keycloak-service` <br/>- Kiểm tra tính hợp lệ của dữ liệu. <br/>- Gửi yêu cầu insert lên hàng đợi `rabbitmq-service` |
 | 5  |  transaction-service | api-transaction |- Tiếp nhận yêu cầu từ hàng đợi `rabbitmq-service` <br/>- Xử lý lưu thông tin vào database.<br/>- Xử lý rollback dữ liệu và ghi log nếu có lỗi xảy ra |
 
 ---
@@ -37,13 +37,13 @@ npm run test
 
 - Đảm bảo các ports sau trong trạng thái không được sử dụng: `3306`, `8080`, `15672`, `5672`, `3001`
 
-- **Run: mysql-db, keycloak-service, rabbitmq-service, transaction-service**.
+- **Run: `mysql-db`, `keycloak-service`, `rabbitmq-service`, `transaction-service`**.
 <br/>- Trên giao diện terminal, di chuyển đến [thư mục chính]() của project, chạy lệnh:
 ```docker
 docker-compose up -d --build
 ```
 
-- **Run: api-service**:
+- **Run: `api-service`**:
 <br/> - Tại thư mục [api-service](api-service), copy file [.env.example](api-service/.env.example) thành file `.env`
 <br/> - Trên giao diện terminal, di chuyển đến thư mục [api-service](api-service), chạy lần lượt lệnh:
 ```docker
